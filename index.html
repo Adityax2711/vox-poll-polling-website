@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoxPoll - Online Polling & Visualization</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Onboarding Section -->
+    <section id="onboarding" class="screen active">
+        <div class="onboarding-card glass-panel">
+            <div class="logo-area">
+                <span class="logo-icon">🗳️</span>
+                <h1>VoxPoll</h1>
+            </div>
+            <p class="subtitle">Welcome! Please verify your identity to proceed.</p>
+
+            <form id="onboarding-form">
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required
+                        autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required class="custom-select">
+                        <option value="" disabled selected>Select your gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="1" max="120" placeholder="Enter your age" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Verify & Enter</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Modal for Underage Alert -->
+    <div id="age-alert-modal" class="modal hidden">
+        <div class="modal-content glass-panel danger-border">
+            <div class="modal-icon danger-icon">🚫</div>
+            <h2>Access Denied</h2>
+            <p>Sorry, you are not eligible to vote. You must be 18 years or older.</p>
+            <button id="close-modal-btn" class="btn btn-outline">Close</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="screen hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">🗳️</span>
+                <h2>VoxPoll</h2>
+            </div>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">?</div>
+                <div class="user-info">
+                    <p class="user-name" id="display-name">User</p>
+                    <span class="badge badge-success"><span class="dot"></span> VERIFIED VOTER</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <h3 class="nav-section-title">NAVIGATION</h3>
+                <ul>
+                    <li class="active"><a href="#" id="nav-dashboard">Dashboard</a></li>
+                </ul>
+                <h3 class="nav-section-title">ADMIN</h3>
+                <ul>
+                    <li><a href="#" id="nav-create-poll"><span class="icon">+</span> Create Poll</a></li>
+                    <li><a href="#" id="nav-manage-polls">Manage Polls</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <span class="status-indicator"><span class="dot pulse"></span> Live auto-updates on</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <h1>Dashboard <span class="header-subtitle">Overview</span></h1>
+                </div>
+                <div class="header-actions">
+                    <span class="badge badge-success"><span class="dot pulse"></span> LIVE</span>
+                    <button id="new-poll-btn" class="btn btn-warning">+ New Poll</button>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card glass-panel">
+                    <h3>TOTAL POLLS</h3>
+                    <div class="kpi-value" id="kpi-total-polls">0</div>
+                    <p class="kpi-trend trend-up">↑ All time</p>
+                </div>
+                <div class="kpi-card glass-panel">
+                    <h3>ACTIVE POLLS</h3>
+                    <div class="kpi-value" id="kpi-active-polls">0</div>
+                    <p class="kpi-trend trend-primary">Open for voting</p>
+                </div>
+                <div class="kpi-card glass-panel">
+                    <h3>TOTAL VOTES</h3>
+                    <div class="kpi-value" id="kpi-total-votes">0</div>
+                    <p class="kpi-trend trend-primary">Across all polls</p>
+                </div>
+                <div class="kpi-card glass-panel">
+                    <h3>ENGAGEMENT</h3>
+                    <div class="kpi-value" id="kpi-engagement">0%</div>
+                    <p class="kpi-trend trend-primary">Active/Total ratio</p>
+                </div>
+            </div>
+
+            <!-- Charts Area -->
+            <div class="charts-grid">
+                <div class="chart-card glass-panel span-2">
+                    <div class="card-header">
+                        <h3>📈 Votes Per Poll</h3>
+                        <span class="badge badge-success"><span class="dot pulse"></span> LIVE</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card glass-panel">
+                    <div class="card-header">
+                        <h3>Poll Status Split</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Area: Live Polls & Demographics -->
+            <div class="bottom-grid">
+                <div class="content-card glass-panel flex-2">
+                    <div class="card-header">
+                        <h3>Active Polls (Vote Now)</h3>
+                    </div>
+                    <div class="polls-list" id="polls-container">
+                        <!-- Polls injected here via JS -->
+                    </div>
+                </div>
+                <div class="content-card glass-panel flex-1">
+                    <div class="card-header">
+                        <h3>👥 Voter Demographics</h3>
+                    </div>
+                    <div class="demographics-grid">
+                        <div class="demo-card male-demo">
+                            <div class="demo-icon">♂</div>
+                            <div class="demo-value" id="demo-male">0</div>
+                            <p>Male Voters</p>
+                        </div>
+                        <div class="demo-card female-demo">
+                            <div class="demo-icon">♀</div>
+                            <div class="demo-value" id="demo-female">0</div>
+                            <p>Female Voters</p>
+                        </div>
+                        <div class="demo-card other-demo" style="grid-column: span 2;">
+                            <div class="demo-icon">⚧</div>
+                            <div class="demo-value" id="demo-other">0</div>
+                            <p>Other Voters</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Poll Modal embedded in Dashboard -->
+            <div id="create-poll-modal" class="modal hidden">
+                <div class="modal-content glass-panel" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h2>Create New Poll</h2>
+                        <button class="close-btn" id="close-create-poll">&times;</button>
+                    </div>
+                    <form id="create-poll-form">
+                        <div class="input-group">
+                            <label for="pollQuestion">Poll Question</label>
+                            <input type="text" id="pollQuestion" placeholder="e.g. What is your favorite framework?"
+                                required>
+                        </div>
+                        <div class="input-group" id="options-group">
+                            <label>Options</label>
+                            <input type="text" class="poll-option-input" placeholder="Option 1" required>
+                            <input type="text" class="poll-option-input" placeholder="Option 2" required>
+                        </div>
+                        <button type="button" id="add-option-btn" class="btn btn-outline btn-small"
+                            style="margin-top: 5px;">+ Add another option</button>
+
+                        <div class="modal-actions" style="margin-top: 25px;">
+                            <button type="submit" class="btn btn-primary btn-block">Launch Poll</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Manage Polls Modal -->
+            <div id="manage-polls-modal" class="modal hidden">
+                <div class="modal-content glass-panel" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h2>Manage Polls</h2>
+                        <button class="close-btn" id="close-manage-polls">&times;</button>
+                    </div>
+                    <div class="manage-polls-list" id="manage-polls-container" style="max-height: 400px; overflow-y: auto; text-align: left;">
+                        <!-- Polls to manage injected here via JS -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </section>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+
+</html>
