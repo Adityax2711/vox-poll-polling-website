@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VoxPoll - Online Polling & Visualization</title>
-    <!-- Google Fonts: Inter -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+  
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <!-- Onboarding Section -->
+    
     <section id="onboarding" class="screen active">
         <div class="onboarding-card glass-panel">
             <div class="logo-area">
@@ -50,7 +50,7 @@
         </div>
     </section>
 
-    <!-- Modal for Underage Alert -->
+
     <div id="age-alert-modal" class="modal hidden">
         <div class="modal-content glass-panel danger-border">
             <div class="modal-icon danger-icon">🚫</div>
@@ -60,9 +60,8 @@
         </div>
     </div>
 
-    <!-- Dashboard Section -->
     <section id="dashboard" class="screen hidden">
-        <!-- Sidebar -->
+       
         <aside class="sidebar">
             <div class="sidebar-header">
                 <span class="logo-icon">🗳️</span>
@@ -91,7 +90,6 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
             <header class="top-header">
                 <div class="header-titles">
@@ -103,7 +101,7 @@
                 </div>
             </header>
 
-            <!-- KPI Cards -->
+         
             <div class="kpi-grid">
                 <div class="kpi-card glass-panel">
                     <h3>TOTAL POLLS</h3>
@@ -127,7 +125,6 @@
                 </div>
             </div>
 
-            <!-- Charts Area -->
             <div class="charts-grid">
                 <div class="chart-card glass-panel span-2">
                     <div class="card-header">
@@ -148,14 +145,13 @@
                 </div>
             </div>
 
-            <!-- Bottom Area: Live Polls & Demographics -->
             <div class="bottom-grid">
                 <div class="content-card glass-panel flex-2">
                     <div class="card-header">
                         <h3>Active Polls (Vote Now)</h3>
                     </div>
                     <div class="polls-list" id="polls-container">
-                        <!-- Polls injected here via JS -->
+                   
                     </div>
                 </div>
                 <div class="content-card glass-panel flex-1">
@@ -182,7 +178,6 @@
                 </div>
             </div>
 
-            <!-- Create Poll Modal embedded in Dashboard -->
             <div id="create-poll-modal" class="modal hidden">
                 <div class="modal-content glass-panel" style="max-width: 500px;">
                     <div class="modal-header">
@@ -210,7 +205,7 @@
                 </div>
             </div>
 
-            <!-- Manage Polls Modal -->
+           
             <div id="manage-polls-modal" class="modal hidden">
                 <div class="modal-content glass-panel" style="max-width: 600px;">
                     <div class="modal-header">
@@ -218,7 +213,7 @@
                         <button class="close-btn" id="close-manage-polls">&times;</button>
                     </div>
                     <div class="manage-polls-list" id="manage-polls-container" style="max-height: 400px; overflow-y: auto; text-align: left;">
-                        <!-- Polls to manage injected here via JS -->
+
                     </div>
                 </div>
             </div>
@@ -226,9 +221,8 @@
         </main>
     </section>
 
-    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom JS -->
+
     <script src="js/app.js"></script>
 </body>
 
