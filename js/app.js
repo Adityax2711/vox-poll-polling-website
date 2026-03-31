@@ -1,8 +1,4 @@
-// ==========================================
-// VoxPoll - State Management & Logic
-// ==========================================
 
-// Global State
 let state = {
     user: {
         name: null,
@@ -18,14 +14,11 @@ let state = {
     polls: []
 };
 
-// ==========================================
-// Local Storage Persistence
-// ==========================================
 function loadData() {
     const saved = localStorage.getItem('voxPollState');
     if (saved) {
         state = JSON.parse(saved);
-        // If it was already verified in a previous session (optional logic, resetting for now so they always see onboarding)
+       
         state.user.isVerified = false; 
     }
 }
@@ -38,9 +31,7 @@ function saveData() {
 let defaultBarChart = null;
 let defaultDoughnutChart = null;
 
-// ==========================================
-// DOM Elements
-// ==========================================
+
 const ui = {
     // Screens
     onboardingScreen: document.getElementById('onboarding'),
@@ -83,9 +74,7 @@ const ui = {
     managePollsContainer: document.getElementById('manage-polls-container')
 };
 
-// ==========================================
-// Initialization
-// ==========================================
+
 document.addEventListener('DOMContentLoaded', () => {
     // Load persisted state if exists
     loadData();
@@ -94,9 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
-// ==========================================
-// Event Listeners
-// ==========================================
+
 function setupEventListeners() {
     // Onboarding Form Submit
     ui.onboardingForm.addEventListener('submit', handleOnboarding);
@@ -122,9 +109,7 @@ function setupEventListeners() {
     ui.createPollForm.addEventListener('submit', handleCreatePoll);
 }
 
-// ==========================================
-// Onboarding Logic
-// ==========================================
+
 function handleOnboarding(e) {
     e.preventDefault();
     
@@ -145,38 +130,33 @@ function handleOnboarding(e) {
     state.user.age = age;
     state.user.isVerified = true;
     
-    // Update Demographics (Mock logic: add 1 to the user's gender to simulate data growth)
+
     if (state.demographics[gender] !== undefined) {
         state.demographics[gender]++;
     }
     
-    // Save to LocalStorage
+  
     saveData();
-    
-    // Proceed to Dashboard
+
     transitionToDashboard();
 }
 
 function transitionToDashboard() {
-    // Hide onboarding
+
     ui.onboardingScreen.classList.remove('active');
-    
-    // Setup initial dashboard UI based on state
+  
     ui.displayName.textContent = state.user.name;
     ui.userAvatar.textContent = state.user.name.charAt(0).toUpperCase();
     
     updateDashboardUI();
     
-    // Show Dashboard
+    
     setTimeout(() => {
         ui.dashboardScreen.classList.add('active');
         initCharts(); // Initialize charts after container is visible
     }, 300);
 }
 
-// ==========================================
-// Dashboard Logic & Rendering
-// ==========================================
 function updateDashboardUI() {
     // 1. Calculate KPIs
     const totalPolls = state.polls.length;
@@ -189,15 +169,14 @@ function updateDashboardUI() {
     ui.kpiTotalVotes.textContent = totalVotes;
     ui.kpiEngagement.textContent = `${engagementRatio}%`;
     
-    // 2. Render Demographics
+  
     ui.demoMale.textContent = state.demographics.Male;
     ui.demoFemale.textContent = state.demographics.Female;
     ui.demoOther.textContent = state.demographics.Other;
-    
-    // 3. Render Polls List
+   
     renderPollsList();
     
-    // 4. Update Charts
+    
     updateCharts();
 }
 
@@ -251,14 +230,11 @@ function renderPollsList() {
     });
 }
 
-// ==========================================
-// Voting Logic
-// ==========================================
 window.castVote = function(pollId, optionId) {
     const poll = state.polls.find(p => p.id === pollId);
     if (!poll || poll.status !== 'active') return;
     
-    // Check if the current user already voted
+    
     poll.userVotes = poll.userVotes || {};
     if (poll.userVotes[state.user.name]) return;
     
@@ -266,21 +242,17 @@ window.castVote = function(pollId, optionId) {
     if (option) {
         option.votes++;
         poll.totalVotes++;
-        // Record user's vote
+        
         poll.userVotes[state.user.name] = optionId;
         
-        saveData(); // Persist vote
+        saveData(); 
         
-        // Simulating network delay for realistic "live" feel
         setTimeout(() => {
             updateDashboardUI();
         }, 150);
     }
 };
 
-// ==========================================
-// Create Poll Logic
-// ==========================================
 function openCreatePollModal() { ui.createPollModal.classList.add('visible'); }
 function closeCreatePollModal() { ui.createPollModal.classList.remove('visible'); }
 
@@ -323,16 +295,16 @@ function handleCreatePoll(e) {
         status: "active"
     };
     
-    // Add to state
-    state.polls.unshift(newPoll); // Add to top
     
-    saveData(); // Persist new poll
+    state.polls.unshift(newPoll); 
     
-    // Cleanup and Close
+    saveData(); 
+    
+
     e.target.reset();
     closeCreatePollModal();
     
-    // Optional: Reset extra input fields generated dynamically
+
     const extraInputs = document.querySelectorAll('.poll-option-input');
     for (let i = 2; i < extraInputs.length; i++) extraInputs[i].remove();
     
@@ -340,9 +312,6 @@ function handleCreatePoll(e) {
     updateDashboardUI();
 }
 
-// ==========================================
-// Manage Polls Logic
-// ==========================================
 function openManagePollsModal() {
     renderManagePolls();
     ui.managePollsModal.classList.add('visible');
@@ -386,22 +355,20 @@ window.togglePollStatus = function(pollId) {
     poll.status = poll.status === 'active' ? 'closed' : 'active';
     saveData();
     
-    renderManagePolls(); // Re-render the modal list
-    updateDashboardUI(); // Re-render the dashboard KPIs, Lists, and Charts
+    renderManagePolls(); 
+    updateDashboardUI(); 
 };
 
-// ==========================================
-// Chart.js Integrations
-// ==========================================
+
 function initCharts() {
-    // Common Chart Defaults for dark theme
+    
     Chart.defaults.color = '#8b92a5';
     Chart.defaults.font.family = 'Inter';
     
     const bgColors = ['#ffb822', '#20c997', '#8e54e9', '#ea868f', '#3366ff'];
     const borderColors = ['rgba(255, 184, 34, 0.8)', 'rgba(32, 201, 151, 0.8)', 'rgba(142, 84, 233, 0.8)'];
 
-    // 1. Bar Chart (Votes Per Poll)
+    
     const barCtx = document.getElementById('barChart').getContext('2d');
     
     defaultBarChart = new Chart(barCtx, {
@@ -422,7 +389,7 @@ function initCharts() {
         }
     });
     
-    // 2. Doughnut Chart (Poll Status Split)
+    
     const donutCtx = document.getElementById('doughnutChart').getContext('2d');
     
     defaultDoughnutChart = new Chart(donutCtx, {
